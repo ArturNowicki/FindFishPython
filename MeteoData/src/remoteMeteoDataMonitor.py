@@ -12,12 +12,13 @@ from utils.connectionUtils import FtpConnector
 from ftplib import all_errors as ftpErrors
 from socket import gaierror
 
+thisFile = os.path.abspath(inspect.getfile(inspect.currentframe()))
+
 def compareLists():
 
     meteoConfigPath = 'config/meteoConfig.cfg'
     meteoConfigSection = 'MeteoConfig'
     pathConfigSection = 'Paths'
-    thisFile = os.path.abspath(inspect.getfile(inspect.currentframe()))
     projectDir = os.path.dirname(os.path.dirname(thisFile))
     configFile = os.path.join(projectDir, meteoConfigPath)
 
@@ -25,7 +26,7 @@ def compareLists():
     try:
         config = configReader.getConfig(configFile)
     except FileNotFoundError as e:
-        logError(e, thisFile)
+        logError(e)
         exit(-1)
 
     meteoHost = config.get(meteoConfigSection, 'host')
@@ -36,18 +37,25 @@ def compareLists():
     ftpConnector = FtpConnector()
     try:
         ftp = ftpConnector.getFtpConnection(meteoHost, meteoUser, meteoPass)
-        meteoFiles = getFilesList(ftp, remoteDir)
+        meteoFilesList = getFilesList(ftp, remoteDir)
     except ftpErrors as e:
-        logError(e, thisFile)
+        logError(e)
         exit(-1)
     except gaierror as e:
-        logError(e, thisFile)
+        logError(e)
         exit(-1)
         
     oldMeteoListFile = config.get(pathConfigSection, 'oldMeteoFiles')
     oldMeteoListFile = os.path.join(projectDir, oldMeteoListFile)
-    print(oldMeteoListFile)
-
+    
+    try:
+        oldFilesList = readOldFilesList('oldMeteoListFile')
+    except FileNotFoundError as e:
+        exit(-1)
+    
+    filesDiff = set(meteoFilesList) - set(oldFilesList)
+    
+    print(filesDiff)
 
 
 
@@ -62,8 +70,16 @@ def getFilesList(ftp, remoteDir):
     ftp.quit()
     return filesList
 
+def readOldFilesList(oldMeteoListFile):
+    try:
+        with open(oldMeteoListFile) as f:
+            oldFilesList = f.read().splitlines()
+    except FileNotFoundError as e:
+        logError(e)
+        raise
+    return oldFilesList
 
-def logError(e, thisFile):
+def logError(e):
     print(str(e) + " Error in: " + thisFile)
     print(str(type(e)))
 
