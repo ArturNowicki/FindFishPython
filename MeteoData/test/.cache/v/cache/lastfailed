@@ -1,3 +1,5 @@
 {
+  "test_config_utils.py::test_get_config_when_Ok": true,
+  "test_config_utils.py::test_get_config_when_no_file": true,
   "utils/test_configUtils.py": true
 }

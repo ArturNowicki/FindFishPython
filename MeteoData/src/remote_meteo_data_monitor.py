@@ -7,37 +7,37 @@ from ftplib import FTP
 import inspect
 import os.path
 
-from utils.configUtils import ConfigReader
-from utils.connectionUtils import FtpConnector
+from utils.config_utils import ConfigReader
+from utils.connection_utils import FtpConnector
 from ftplib import all_errors as ftpErrors
 from socket import gaierror
 
-thisFile = os.path.abspath(inspect.getfile(inspect.currentframe()))
+this_file = os.path.abspath(inspect.getfile(inspect.currentframe()))
 
 def compareLists():
-
-    meteoConfigPath = 'config/meteoConfig.cfg'
-    meteoConfigSection = 'MeteoConfig'
+    
+    METEO_CONFIG_PATH = 'config/meteoConfig.cfg'
     pathConfigSection = 'Paths'
-    projectDir = os.path.dirname(os.path.dirname(thisFile))
-    configFile = os.path.join(projectDir, meteoConfigPath)
+    
+    project_dir = os.path.dirname(os.path.dirname(this_file))
+    config_file = os.path.join(project_dir, METEO_CONFIG_PATH)
 
-    configReader = ConfigReader()
+    config_reader = ConfigReader()
     try:
-        config = configReader.getConfig(configFile)
+        config = config_reader.get_config(config_file)
     except FileNotFoundError as e:
         logError(e)
         exit(-1)
 
-    meteoHost = config.get(meteoConfigSection, 'host')
-    meteoUser = config.get(meteoConfigSection, 'user')
-    meteoPass = config.get(meteoConfigSection, 'pass')
-    remoteDir = config.get(meteoConfigSection, 'remoteDir')
+    meteoHost = config.get(meteo_config_section, 'host')
+    meteoUser = config.get(meteo_config_section, 'user')
+    meteoPass = config.get(meteo_config_section, 'pass')
+    remote_dir = config.get(meteo_config_section, 'remote_dir')
 
-    ftpConnector = FtpConnector()
+    ftp_connector = FtpConnector()
     try:
-        ftp = ftpConnector.getFtpConnection(meteoHost, meteoUser, meteoPass)
-        meteoFilesList = getFilesList(ftp, remoteDir)
+        ftp = ftp_connector.get_ftp_connection(meteoHost, meteoUser, meteoPass)
+        meteoFilesList = getFilesList(ftp, remote_dir)
     except ftpErrors as e:
         logError(e)
         exit(-1)
@@ -46,7 +46,7 @@ def compareLists():
         exit(-1)
         
     oldMeteoListFile = config.get(pathConfigSection, 'oldMeteoFiles')
-    oldMeteoListFile = os.path.join(projectDir, oldMeteoListFile)
+    oldMeteoListFile = os.path.join(project_dir, oldMeteoListFile)
     
     try:
         oldFilesList = readOldFilesList('oldMeteoListFile')
@@ -80,7 +80,7 @@ def readOldFilesList(oldMeteoListFile):
     return oldFilesList
 
 def logError(e):
-    print(str(e) + " Error in: " + thisFile)
+    print(str(e) + " Error in: " + __name__)
     print(str(type(e)))
 
 
