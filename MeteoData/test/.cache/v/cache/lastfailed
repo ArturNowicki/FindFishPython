@@ -1,5 +1,7 @@
 {
   "test_config_utils.py::test_get_config_when_Ok": true,
   "test_config_utils.py::test_get_config_when_no_file": true,
+  "test_config_utils.py::test_get_config_when_wrong_config_file": true,
+  "test_logging_utils.py::test_logging": true,
   "utils/test_configUtils.py": true
 }

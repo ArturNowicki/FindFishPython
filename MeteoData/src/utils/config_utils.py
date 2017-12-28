@@ -5,26 +5,52 @@ Created on Sep 19, 2017
 '''
 
 import configparser
-from definitions import CONFIG_FILE, MSG_NO_CONFIG_FILE
-from datetime import datetime
-from utils.logging_utils import LoggingUtils
+
+from definitions.msg_definitions import MSG_NO_CONFIG_FILE
+from definitions.path_definitions import CONFIG_FILE
 
 class ConfigReader(object):
     '''
     configuration file reader
+    provides getters for configuration parameters
     '''
+    umRemoteHostConfig = 'umRemoteHostConfig'
+    pathsConfig = 'pathsConfig'
+    interpConfig = 'interpConfig'
+    logConfig = 'logConfig'
     
-    def __init__(self):
-        self._tools = LoggingUtils()
+    @classmethod
+    def get_host(cls):
+        return cls.get_cfg().get(cls.umRemoteHostConfig, 'host')
 
+    @classmethod
+    def get_user(cls):
+        return cls.get_cfg().get(cls.umRemoteHostConfig, 'user')
 
-    def get_config(self, CONFIG_FILE):
-        logger = self._tools.get_logger()
-        config = configparser.ConfigParser()
-        dataset = config.read(CONFIG_FILE)
-        if len(dataset) != 1:
-            message = self._tools.compose_message(__file__, MSG_NO_CONFIG_FILE)
-            logger.error(message)
+    @classmethod
+    def get_pass(cls):
+        return cls.get_cfg().get(cls.umRemoteHostConfig, 'pass')
+
+    @classmethod
+    def get_remote_dir(cls):
+        return cls.get_cfg().get(cls.umRemoteHostConfig, 'remote_dir')
+
+    @classmethod
+    def get_used_meteo_list(cls):
+        return cls.get_cfg().get(cls.pathsConfig, 'old_meteo_files')
+
+    @classmethod
+    def get_interp_method(cls):
+        return cls.get_cfg().get(cls.interpConfig, 'interp_method')
+
+    @classmethod
+    def get_logging_level(cls):
+        return cls.get_cfg().get(cls.logConfig, 'logging_level')
+
+    @staticmethod
+    def get_cfg():
+        config_parser = configparser.ConfigParser()
+        dataset = config_parser.read(CONFIG_FILE)
+        if len(dataset) == 0:
             raise FileNotFoundError(MSG_NO_CONFIG_FILE)
-        return config
-        
+        return config_parser
