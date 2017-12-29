@@ -9,4 +9,4 @@ from os.path import os
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 CONFIG_FILE = os.path.join(ROOT_DIR, '../config/meteoConfig.conf')
-LOGS_FILE = os.path.join(ROOT_DIR, '../application_logs/meteo_logger.log')
+LOGS_DIR = os.path.join(ROOT_DIR, '../application_logs/')
