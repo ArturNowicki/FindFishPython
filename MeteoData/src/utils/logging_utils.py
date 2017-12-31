@@ -17,7 +17,8 @@ class LoggingUtils:
         log_date = str(datetime.today().date()).replace('-', '_')
         log_hour = now.hour
         log_minute = now.minute
-        f_name = '%s_%s_%s_meteo.log' % (log_date, log_hour, log_minute)
+#         f_name = '%s_%s_%s_meteo.log' % (log_date, log_hour, log_minute)
+        f_name = '%s_%s_meteo.log' % (log_date, log_hour)
         logging_level = ConfigReader.get_logging_level()
         logging.basicConfig(filename = os.path.join(LOGS_DIR, f_name),
                     format = '%(asctime)s %(levelname)s: %(message)s',
