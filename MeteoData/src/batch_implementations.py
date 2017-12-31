@@ -26,5 +26,4 @@ class BatchRunner(BatchRunnerProxy):
 
     def update_status(self):
         logging.warning(type(self).__name__ + ': Update_status not implemented')
-#         return BatchRunnerProxy.update_status(self)
     

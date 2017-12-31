@@ -23,12 +23,12 @@ class BatchRunnerProxy:
 
     def consistency_check(self):
         raise NotImplementedError
-
+    def update_status(self):
+        raise NotImplementedError
+    
     def processBatch(self):
         etl_proxy = ETLProxy(self.__etl_impl)
         etl_proxy.extract()
         etl_proxy.transform()
         etl_proxy.load()
 
-    def update_status(self):
-        raise NotImplementedError

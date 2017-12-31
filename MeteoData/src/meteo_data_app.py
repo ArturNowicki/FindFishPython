@@ -16,7 +16,7 @@ def main():
     batch_runner.consistency_check()
     batch_runner.processBatch()
     batch_runner.update_status()
-    logging.info(__name__ + 'Done.')
+    logging.info(__name__ + ': Done.')
 
 if __name__ == '__main__':
     main()
