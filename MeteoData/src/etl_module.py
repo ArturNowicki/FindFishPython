@@ -8,38 +8,21 @@ from utils.config_utils import ConfigReader
 from utils.connection_utils import FtpConnector
 from ftplib import all_errors as ftpErrors
 from socket import gaierror
-import luigi
 
 host = ConfigReader.get_host()
 user = ConfigReader.get_user()
 passwd = ConfigReader.get_pass()
 remote_dir = ConfigReader.get_remote_dir()
-
-
-class ExtractData(luigi.Task):
-    date = luigi.DateParameter()
-
-    def requires(self):
-        return []
-
-    def output(self):
-        return luigi.LocalTarget(self.date.strftime('../resources/icm_data.txt'))
-
-    def run(self):
-        with(self.output().open('w')) as output:
-            output.write('example_data')
     
-    
-#     logging.info(__name__ + ': Retrieving new ICM files list.')
-#     new_dataset = get_new_dataset()
-#     files_no = len(new_dataset)
-#     if files_no < 3:
-#         logging.info(__name__ + ': No new ICM files.')
-#     download_data()
-#     unpack_data()
-
-if __name__ == "__main__":
-    luigi.run()
+def extract_data():
+    logging.info(__name__ + ': Retrieving new ICM files list.')
+    new_dataset = get_new_dataset()
+    files_no = len(new_dataset)
+    if files_no < 3:
+        logging.info(__name__ + ': No new ICM files.')
+        return
+    download_data()
+    unpack_data()
     
 def get_new_dataset():
     try:
