@@ -1,6 +1,4 @@
 /.metadata/
-**.pyc
 *.log
 *.pyc
-*.pyc
-*.pyc
+.DS_Store
