@@ -22,13 +22,14 @@ def extract_data():
         new_dataset = get_new_dataset()
     except FTPLoginException as e:
         sys.exit(1)
-    if len(new_dataset) < 3000:
+    if len(new_dataset) < 3:
         logging.info(__name__ + ': No new ICM files.')
-        return []
+        sys.exit(0)
     logging.info(__name__ + ': Downloading ICM files.')
-    download_data()
+    download_data(new_dataset)
     logging.info(__name__ + ': Extracting ICM files.')
     unpack_data()
+
 
 def get_new_dataset():
     try:
@@ -39,15 +40,14 @@ def get_new_dataset():
     except gaierror as e:
         logging.error(__name__ + ': ' + str(e))
         raise FTPLoginException(e)
-    new_files_list = getFilesList(ftp, remote_dir)
+    new_files_list = getFilesList(ftp)
     old_files_list = readOldFilesList(ConfigReader.get_used_meteo_list())
     new_files = set(new_files_list) - set(old_files_list)
-    logging.info('trololo')
     return new_files
 
-def getFilesList(ftp, remoteDir):
+def getFilesList(ftp):
     filesList = []
-    ftp.cwd(remoteDir)
+    ftp.cwd(remote_dir)
     ftp.retrlines('NLST', filesList.append)
     ftp.quit()
     return filesList
@@ -62,7 +62,18 @@ def readOldFilesList(oldMeteoListFile):
     return oldFilesList
 
 def download_data():
-    pass
-
+    try:
+        ftp = FtpConnector.get_ftp_connection(host, user, passwd)
+    except ftpErrors as e:
+        logging.error(__name__ + ': ' + str(e))
+        raise FTPLoginException(e)
+    except gaierror as e:
+        logging.error(__name__ + ': ' + str(e))
+        raise FTPLoginException(e)
+    new_files_list = getFilesList(ftp, remote_dir)
+    old_files_list = readOldFilesList(ConfigReader.get_used_meteo_list())
+    new_files = set(new_files_list) - set(old_files_list)
+    return new_files
+    
 def unpack_data():
     pass

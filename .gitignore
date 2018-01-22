@@ -1,2 +1,5 @@
 /.metadata/
 **.pyc
+*.log
+*.pyc
+*.pyc
